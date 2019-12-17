@@ -10,5 +10,6 @@ namespace v1jobportal.ViewModels
     {
         [Required]
         public string Email { get; set; }
+        
     }
 }

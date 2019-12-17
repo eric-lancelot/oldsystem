@@ -77,5 +77,11 @@ namespace v1jobportal.Models
 
         [DataType(DataType.Date)]
         public DateTime Ud_DateOfCertification { get; set; }
+
+        public string CandidateName { get; set; }
+
+        public string JobTitle { get; set; }
+
+        public string jobid { get; set; }
     }
 }

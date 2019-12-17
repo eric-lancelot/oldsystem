@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace v1jobportal.Models
 {
-    public class AllJobListings
+    public class ViewApplicants
     {
         public int Id { get; set; }
         [Required]
-        [Display(Name ="Job Title")]
+        [Display(Name = "Job Title")]
         public string JobTitle { get; set; }
         [Required]
         [Display(Name = "Duty Station")]
@@ -19,7 +19,7 @@ namespace v1jobportal.Models
         [Required]
         [Display(Name = "Duties Brief")]
         public string Duties { get; set; }
-        
+
         [Display(Name = "Doctorate Degree")]
         public bool Doctorate { get; set; }
         [Display(Name = "Masters Degree")]
@@ -29,7 +29,6 @@ namespace v1jobportal.Models
         [Display(Name = "Diploma")]
         public bool Diploma { set; get; }
         [Display(Name = "Certificate")]
-
         public bool Certificate { set; get; }
 
         [DataType(DataType.Date)]

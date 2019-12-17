@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<v1jobportal.Models.AllJobListings>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "JOBS - CONTROl";
 }
 
 <h2>Available Vancancies</h2>
@@ -114,10 +114,31 @@
             }
             else
             {
+                //sdeadline is past
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.JobTitle)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DutyStation)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Duties)
+                    </td>
 
-                //Here Dont Display expired jobs
-             
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Deadline)
+                    </td>
+                    <td>
+                        <span class="alert alert-danger"><b>Expired</b></span>
+                    </td>
+                    <td height="50">
+                        <a class="nav-link btn btn-info" asp-controller="ApplicantBioDatas" asp-action="Create"><b>Apply</b></a>
+                    </td>
+
+                </tr>
             }
         }
     </tbody>
 </table>
+

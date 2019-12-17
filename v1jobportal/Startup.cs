@@ -15,11 +15,13 @@ using Microsoft.Extensions.Hosting;
 using v1jobportal.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.Session;
 
 namespace v1jobportal
 {
     public class Startup
     {
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -30,6 +32,16 @@ namespace v1jobportal
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            services.AddCors(options =>
+                     options.AddPolicy("MyPolicy", builder =>
+                     {
+                               builder.WithOrigins("https://developers.camelotwave.com")
+                                .AllowAnyMethod()
+                                .AllowCredentials()
+                                .AllowAnyHeader();
+                     }));
+
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
@@ -40,19 +52,22 @@ namespace v1jobportal
                     .AddEntityFrameworkStores<ApplicationDbContext>();*/
 
             services.AddIdentity<IdentityUser, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
             services.AddControllersWithViews();
             /*services.AddRazorPages(options =>
             {
                 options.Conventions.AddPageRoute("/AllJobListings/Index", "");
             });*/
+            services.AddDistributedMemoryCache();
             services.AddMvc(options =>
             {
                 var policy = new AuthorizationPolicyBuilder()
                                 .RequireAuthenticatedUser()
                                 .Build();
-                options.Filters.Add(new AuthorizeFilter(policy)); 
+                options.Filters.Add(new AuthorizeFilter(policy));
             }).AddXmlSerializerFormatters();
+
             services.Configure<IdentityOptions>(options =>
             {
                 // Password settings.
@@ -71,14 +86,16 @@ namespace v1jobportal
                 // User settings.
                 options.User.AllowedUserNameCharacters =
                 "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
-                options.User.RequireUniqueEmail = false;
+                options.User.RequireUniqueEmail = true;
+
             });
+
 
             services.ConfigureApplicationCookie(options =>
             {
                 // Cookie settings
                 options.Cookie.HttpOnly = true;
-                options.ExpireTimeSpan = TimeSpan.FromHours(1);
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
 
                 options.LoginPath = "/Account/Login";
                 options.AccessDeniedPath = "/Identity/Account/AccessDenied";
@@ -93,6 +110,14 @@ namespace v1jobportal
                                  .Build();
                 config.Filters.Add(new AuthorizeFilter(policy));
             });
+
+            //session controller servicesse
+            services.AddDistributedMemoryCache();
+            services.AddSession(options => {
+                options.Cookie.Name = "MyNewSession";
+
+            });
+
 
 
         }
@@ -112,6 +137,9 @@ namespace v1jobportal
                 app.UseHsts();
             }
 
+            //enable session before MVC/Routing
+            app.UseSession();
+            app.UseCors("MyPolicy");
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();

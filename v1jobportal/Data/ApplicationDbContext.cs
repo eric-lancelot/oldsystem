@@ -40,5 +40,7 @@ namespace v1jobportal.Data
             builder.Entity<IdentityRole>().HasData(new IdentityRole { Name = "Admin", NormalizedName = "ADMIN", Id = Guid.NewGuid().ToString(), ConcurrencyStamp = Guid.NewGuid().ToString() });
         }
 
+        public DbSet<v1jobportal.Models.DisplayLinkJobDetailsModel> DisplayLinkJobDetailsModel { get; set; }
+
     }
 }
